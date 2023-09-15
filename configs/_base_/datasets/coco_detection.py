@@ -36,29 +36,29 @@ test_pipeline = [
 ]
 train_dataloader = dict(
     batch_size=2,
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     batch_sampler=dict(type='AspectRatioBatchSampler'),
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/instances_train2017.json',
-        data_prefix=dict(img='train2017/'),
+        ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_train.json',
+        data_prefix=dict(img='coco_annotations_images_640_02'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         backend_args=backend_args))
 val_dataloader = dict(
-    batch_size=1,
-    num_workers=2,
+    batch_size=4,
+    num_workers=1,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/instances_val2017.json',
-        data_prefix=dict(img='val2017/'),
+        ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_val.json',
+        data_prefix=dict(img='coco_annotations_images_640_02'),
         test_mode=True,
         pipeline=test_pipeline,
         backend_args=backend_args))
@@ -66,7 +66,7 @@ test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/instances_val2017.json',
+    ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_val.json',
     metric='bbox',
     format_only=False,
     backend_args=backend_args)

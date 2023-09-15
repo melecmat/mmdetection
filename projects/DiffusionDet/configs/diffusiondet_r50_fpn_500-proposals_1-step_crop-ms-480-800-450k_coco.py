@@ -33,7 +33,7 @@ model = dict(
         num_outs=4),
     bbox_head=dict(
         type='DynamicDiffusionDetHead',
-        num_classes=80,
+        num_classes=1,
         feat_channels=256,
         num_proposals=500,
         num_heads=6,
@@ -59,7 +59,7 @@ model = dict(
         # criterion
         criterion=dict(
             type='DiffusionDetCriterion',
-            num_classes=80,
+            num_classes=1,
             assigner=dict(
                 type='DiffusionDetMatcher',
                 match_costs=[
