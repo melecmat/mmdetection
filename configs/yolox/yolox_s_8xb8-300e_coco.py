@@ -39,7 +39,7 @@ model = dict(
         act_cfg=dict(type='Swish')),
     bbox_head=dict(
         type='YOLOXHead',
-        num_classes=80,
+        num_classes=1, # updated number of classes
         in_channels=128,
         feat_channels=128,
         stacked_convs=2,
@@ -124,8 +124,8 @@ train_dataset = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/instances_train2017.json',
-        data_prefix=dict(img='train2017/'),
+        ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_no_empty_train.json',
+        data_prefix=dict(img='coco_annotations_images_640_02/'),
         pipeline=[
             dict(type='LoadImageFromFile', backend_args=backend_args),
             dict(type='LoadAnnotations', with_bbox=True)
@@ -149,22 +149,22 @@ test_pipeline = [
 ]
 
 train_dataloader = dict(
-    batch_size=8,
-    num_workers=4,
+    batch_size=4,
+    num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=train_dataset)
 val_dataloader = dict(
-    batch_size=8,
-    num_workers=4,
+    batch_size=4,
+    num_workers=1,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/instances_val2017.json',
-        data_prefix=dict(img='val2017/'),
+        ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_no_empty_val.json',
+        data_prefix=dict(img='coco_annotations_images_640_02/'),
         test_mode=True,
         pipeline=test_pipeline,
         backend_args=backend_args))
@@ -172,15 +172,15 @@ test_dataloader = val_dataloader
 
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/instances_val2017.json',
+    ann_file='/mnt/datasets/idp/2022-10-06T16-34-42/sahi_sliced/annotations/coco_annotations_only_car_no_empty_val.json',
     metric='bbox',
     backend_args=backend_args)
 test_evaluator = val_evaluator
 
 # training settings
-max_epochs = 300
-num_last_epochs = 15
-interval = 10
+max_epochs = 50
+num_last_epochs = 1
+interval = 1
 
 train_cfg = dict(max_epochs=max_epochs, val_interval=interval)
 
@@ -247,4 +247,6 @@ custom_hooks = [
 # NOTE: `auto_scale_lr` is for automatically scaling LR,
 # USER SHOULD NOT CHANGE ITS VALUES.
 # base_batch_size = (8 GPUs) x (8 samples per GPU)
-auto_scale_lr = dict(base_batch_size=64)
+auto_scale_lr = dict(base_batch_size=4)
+
+load_from = "https://download.openmmlab.com/mmdetection/v2.0/yolox/yolox_s_8x8_300e_coco/yolox_s_8x8_300e_coco_20211121_095711-4592a793.pth"
